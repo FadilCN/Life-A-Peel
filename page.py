@@ -364,7 +364,7 @@ if st.button("🍌 See My Life-O-Peel Score"):
 
     # Create DataFrame and reorder columns to match model
     df = pd.DataFrame([features])
-    df = df[model.feature_names_in_]
+    df = df[model.feature_name()]
 
     # Apply transformations if needed (e.g., log) — uncomment and adapt as needed
     # df["financial_satisfaction"] = np.log1p(df["financial_satisfaction"])
