@@ -370,7 +370,7 @@ if st.button("🍌 See My Life-O-Peel Score"):
     # df["financial_satisfaction"] = np.log1p(df["financial_satisfaction"])
 
     # Predict
-    prediction = model.predict(df)[0]
+    prediction = int(model.predict(df)[0])
 
     # Correct mapping based on your class labels (1 = low, 2 = medium, 3 = high)
     if prediction == 3:
