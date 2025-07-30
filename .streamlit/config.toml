@@ -1,0 +1,7 @@
+[theme]
+base = "light"
+primaryColor = "#FFB347"             # Banana-orange for buttons/sliders
+backgroundColor = "#FFF7DC"          # Soft banana-cream background
+secondaryBackgroundColor = "#FFE6A7" # Panel/card background
+textColor = "#3E2723"                # Monkey brown text
+
