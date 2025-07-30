@@ -360,9 +360,7 @@ if st.button("🍌 See My Life-O-Peel Score"):
         ) / 4,
     }
 
-    # Add country code if used
-    for code in country_lookup.values():
-        features[f"country_code_{code}"] = 1 if code == selected_country_code else 0
+    
 
     # Create DataFrame and reorder columns to match model
     df = pd.DataFrame([features])
