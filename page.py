@@ -45,9 +45,8 @@ p, label, .stTextInput, .stRadio, .stSlider, .stSelectbox, .stMultiSelect, .stTe
 }
 </style>
 """, unsafe_allow_html=True)
-import lightgbm as lgb
-model = lgb.Booster(model_file="lgbm_model.txt")
 
+model = joblib.load("lgbm_model.pkl")
 
 
 st.image("tetx.png") 
@@ -364,13 +363,13 @@ if st.button("🍌 See My Life-O-Peel Score"):
 
     # Create DataFrame and reorder columns to match model
     df = pd.DataFrame([features])
-    df = df[model.feature_name()]
+    df = df[model.feature_names_in_]
 
     # Apply transformations if needed (e.g., log) — uncomment and adapt as needed
     # df["financial_satisfaction"] = np.log1p(df["financial_satisfaction"])
 
     # Predict
-    prediction = int(model.predict(df)[0])
+    prediction = model.predict(df)[0]
 
     # Correct mapping based on your class labels (1 = low, 2 = medium, 3 = high)
     if prediction == 3:
