@@ -45,8 +45,9 @@ p, label, .stTextInput, .stRadio, .stSlider, .stSelectbox, .stMultiSelect, .stTe
 }
 </style>
 """, unsafe_allow_html=True)
+import lightgbm as lgb
+model = lgb.Booster(model_file="lgbm_model.txt")
 
-model = joblib.load("lgbm_model.pkl")
 
 
 st.image("tetx.png") 
