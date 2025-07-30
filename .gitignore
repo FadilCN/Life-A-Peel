@@ -1,0 +1,18 @@
+# === Ignore large files ===
+rf_model.pkl
+WVS_Cross-National_Wave_7_csv_v6_0.csv
+
+# === Ignore all pickle files EXCEPT lgbm_model.pkl ===
+*.pkl
+!lgbm_model.pkl
+
+# === Ignore Python and system files ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+env/
+venv/
+.vscode/
+.DS_Store
