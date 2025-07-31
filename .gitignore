@@ -5,6 +5,7 @@ WVS_Cross-National_Wave_7_csv_v6_0.csv
 # === Ignore all pickle files EXCEPT lgbm_model.pkl ===
 *.pkl
 !lgbm_model.pkl
+!model.pkl
 
 # === Ignore Python and system files ===
 __pycache__/
