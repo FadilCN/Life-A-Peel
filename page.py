@@ -46,7 +46,7 @@ p, label, .stTextInput, .stRadio, .stSlider, .stSelectbox, .stMultiSelect, .stTe
 </style>
 """, unsafe_allow_html=True)
 
-model = joblib.load("lgbm_model.pkl")
+model = joblib.load("model.pkl")
 
 
 st.image("tetx.png") 
@@ -60,7 +60,7 @@ with left:
 with right:
     st.write(" Yo! I'm Monkey Peel-o")
     st.write("I might look like a monkey... because I am one. ")
-    st.success("🍌 My life score predictions are **about 60%–70% accurate**… unless I get distracted by bananas.")
+    st.success("🍌 My life score predictions are **about 75%–85% accurate**… unless I get distracted by bananas.")
     st.caption("No guarantees. I'm literally a monkey with a model.")
 
 st.markdown("Answer these simple questions — your banana buddy is listening! 🍌")
@@ -69,321 +69,313 @@ st.markdown("Answer these simple questions — your banana buddy is listening! �
 # -------------------------------
 # 😄 HOW YOU FEEL
 # -------------------------------
-st.header("😄 How You Feel")
+import streamlit as st
+st.header("🏠 Your Living Standard")
 
-happiness = st.radio("How happy are you these days?", [
-    (1, "Very happy"), (2, "Rather happy"), (3, "Not very happy"), (4, "Not at all happy")
-], format_func=lambda x: x[1])[0]
-
-health = st.radio("How is your health?", [
-    (1, "Very good"), (2, "Good"), (3, "Fair"), (4, "Poor"), (5, "Very poor")
-], format_func=lambda x: x[1])[0]
-
-# Freedom of choice (scaled from 1–10 → 1–8)
-freedom_options = {
-    "Very Restricted": 1,
-    "Somewhat Restricted": 2,
-    "Somewhat Free": 3,
-    "Completely Free": 4
+income_level_options = [2, 3, 1]
+income_level_labels = {
+    1: "Low",
+    2: "Medium",
+    3: "High"
 }
 
-# Freedom of choice with hardcoded scaled values
-freedom_options = {
-    "Limited Freedom": 1,
-    "Moderate Freedom": 6,
-    "Full Freedom": 10
-}
-
-selected_freedom_label = st.radio(
-    "How much freedom do you feel in making your own life choices?",
-    options=list(freedom_options.keys())
+Income_Level_Grouped = st.radio(
+    "What is your income level group?",
+    options=income_level_options,
+    format_func=lambda x: income_level_labels[x],
+    index=0  # default 2 (Medium)
 )
-
-freedom = freedom_options[selected_freedom_label]
-
-st.write(f"Selected: **{selected_freedom_label}** → Scaled value: **{freedom}**")
-
-#freedom = round(1 + ((freedom_input - 1) / 9) * 7, 2)
-# Financial satisfaction (scaled from 1–3 → 1–8, no decimals)
-# Financial satisfaction with hardcoded scaled values
 financial_options = {
     "Dissatisfied": 1,
     "Neutral": 6,
     "Satisfied": 8
 }
-
 selected_finance_label = st.radio(
     "How satisfied are you with your financial situation?",
     options=list(financial_options.keys())
 )
-
 financial_satisfaction = financial_options[selected_finance_label]
 
-st.write(f"Selected: **{selected_finance_label}** → Scaled value: **{financial_satisfaction}**")
-
-
-#financial_satisfaction = round(1 + ((financial_satisfaction_input - 1) / 9) * 7, 2)
-
-
+# Freedom_of_Choice_Binned
+freedom_options = {
+    "Limited Freedom": 1,
+    "Moderate Freedom": 6,
+    "Full Freedom": 10
+}
+selected_freedom_label = st.radio(
+    "How much freedom do you feel in making your own life choices?",
+    options=list(freedom_options.keys())
+)
+freedom = freedom_options[selected_freedom_label]
 
 # -------------------------------
 # 🍽️ BASIC NEEDS
 # -------------------------------
 st.header("🍽️ Did You Face Any Problems This Year?")
 
-went_without_food = st.radio("Did you ever go without food?", [
-    (1, "Often"), (2, "Sometimes"), (3, "Rarely"), (4, "Never")
-], format_func=lambda x: x[1])[0]
+basic_needs_options = [4, 2, 3, 1]
+basic_needs_labels = {
+    1: "Never",
+    2: "Rarely",
+    3: "Sometimes",
+    4: "Often"
+}
 
-went_without_medicine = st.radio("Did you miss medicine or treatment?", [
-    (1, "Often"), (2, "Sometimes"), (3, "Rarely"), (4, "Never")
-], format_func=lambda x: x[1])[0]
+No_Cash_Income = st.radio(
+    "Did you run out of cash/money?",
+    options=basic_needs_options,
+    format_func=lambda x: basic_needs_labels[x],
+    index=0  # default 4 (Often)
+)
 
-went_without_cash = st.radio("Did you run out of money?", [
-    (1, "Often"), (2, "Sometimes"), (3, "Rarely"), (4, "Never")
-], format_func=lambda x: x[1])[0]
+No_Food = st.radio(
+    "Did you ever go without food?",
+    options=basic_needs_options,
+    format_func=lambda x: basic_needs_labels[x],
+    index=0  # default 4 (Often)
+)
 
-went_without_shelter = st.radio("Did you not have a place to stay?", [
-    (1, "Often"), (2, "Sometimes"), (3, "Rarely"), (4, "Never")
-], format_func=lambda x: x[1])[0]
+No_Medicine = st.radio(
+    "Did you miss medicine or treatment?",
+    options=basic_needs_options,
+    format_func=lambda x: basic_needs_labels[x],
+    index=0  # default 4 (Often)
+)
 
-unsafe_at_home = st.radio("Did you feel unsafe at home?", [
-    (1, "Often"), (2, "Sometimes"), (3, "Rarely"), (4, "Never")
-], format_func=lambda x: x[1])[0]
+No_Shelter = st.radio(
+    "Did you lack shelter?",
+    options=basic_needs_options,
+    format_func=lambda x: basic_needs_labels[x],
+    index=0  # default 4 (Often)
+)
 
-living_standard_vs_parents = st.radio("Compared to your parents, are you better off?", [
-    (1, "Better off"), (2, "Worse off"), (3, "About the same")
-], format_func=lambda x: x[1])[0]
+unsafe_at_home_options = [4, 3, 2, 1]
+unsafe_at_home_labels = {
+    1: "Never",
+    2: "Rarely",
+    3: "Sometimes",
+    4: "Often"
+}
 
-# -------------------------------
-# 💖 VALUES
-# -------------------------------
-st.header("💖 What Matters to You?")
-
-importance_family = st.radio("Is family important to you?", [
-    (1, "Very important"), (2, "Important"), (3, "Not very"), (4, "Not at all")
-], format_func=lambda x: x[1])[0]
-
-importance_friends = st.radio("Are friends important?", [
-    (1, "Very important"), (2, "Important"), (3, "Not very"), (4, "Not at all")
-], format_func=lambda x: x[1])[0]
-
-importance_work = st.radio("Is work important?", [
-    (1, "Very important"), (2, "Important"), (3, "Not very"), (4, "Not at all")
-], format_func=lambda x: x[1])[0]
-
-importance_religion = st.radio("Is religion important?", [
-    (1, "Very important"), (2, "Important"), (3, "Not very"), (4, "Not at all")
-], format_func=lambda x: x[1])[0]
-
-importance_leisure_time = st.radio("Is free time important?", [
-    (1, "Very important"), (2, "Important"), (3, "Not very"), (4, "Not at all")
-], format_func=lambda x: x[1])[0]
-
-# -------------------------------
-# 🧒 CHILD VALUES
-# -------------------------------
-st.header("🧒 What Should Kids Learn?")
-
-teach_responsibility = st.radio("Should kids learn responsibility?", [(1, "Yes"), (0, "No")],
-                                format_func=lambda x: x[1])[0]
-teach_determination = st.radio("Should kids learn to never give up?", [(1, "Yes"), (0, "No")],
-                               format_func=lambda x: x[1])[0]
-teach_religion = st.radio("Should kids learn religion?", [(1, "Yes"), (0, "No")],
-                          format_func=lambda x: x[1])[0]
+Unsafe_at_Home = st.radio(
+    "Did you feel unsafe at home?",
+    options=unsafe_at_home_options,
+    format_func=lambda x: unsafe_at_home_labels[x],
+    index=0  # default 4 (Often)
+)
 
 # -------------------------------
-# 🎯 GOALS & DUTIES
+# 🏠 LIVING STANDARD
 # -------------------------------
-st.header("🎯 Your Life Goals")
 
-goal_make_parents_proud = st.radio("Do you try to make your parents proud?", [
-    (1, "Strongly agree"), (2, "Agree"), (3, "Disagree"), (4, "Strongly disagree")
-], format_func=lambda x: x[1])[0]
-
-duty_care_parents = st.radio("Should children care for their parents?", [
-    (1, "Strongly agree"), (2, "Agree"), (3, "Disagree"), (4, "Strongly disagree")
-], format_func=lambda x: x[1])[0]
-
-work_as_duty = st.radio("Is work a duty to society?", [
-    (1, "Strongly agree"), (2, "Agree"), (3, "Disagree"), (4, "Strongly disagree")
-], format_func=lambda x: x[1])[0]
 
 # -------------------------------
-# 🤝 TRUST
+# 😄 How You Feel
 # -------------------------------
-st.header("🤝 Trust-o-Meter")
+st.header("😄 How You Feel")
 
-general_trust = st.radio("Can most people be trusted?", [
-    (1, "Most people can be trusted"), (2, "Need to be very careful")
-], format_func=lambda x: x[1])[0]
+happiness_options = [1, 2, 3, 4]
+happiness_labels = {
+    1: "Very unhappy",
+    2: "Unhappy",
+    3: "Happy",
+    4: "Very happy"
+}
 
-trust_family = st.radio("Do you trust your family?", [
-    (1, "Trust completely"), (2, "Trust somewhat"), (3, "Don't trust much"), (4, "Don't trust at all")
-], format_func=lambda x: x[1])[0]
+Happiness_Rev = st.radio(
+    "How happy do you feel generally?",
+    options=happiness_options,
+    format_func=lambda x: happiness_labels[x],
+    index=3  # default 4 (Very happy)
+)
 
-trust_neighborhood = st.radio("Do you trust your neighbors?", [
-    (1, "Trust completely"), (2, "Trust somewhat"), (3, "Don't trust much"), (4, "Don't trust at all")
-], format_func=lambda x: x[1])[0]
+health_options = [3, 2, 1, 5, 4]
+health_labels = {
+    1: "Very poor",
+    2: "Poor",
+    3: "Fair",
+    4: "Very good",
+    5: "Good"
+}
 
-trust_known_people = st.radio("Do you trust people you know?", [
-    (1, "Trust completely"), (2, "Trust somewhat"), (3, "Don't trust much"), (4, "Don't trust at all")
-], format_func=lambda x: x[1])[0]
+Health_Rev = st.radio(
+    "How would you rate your health?",
+    options=health_options,
+    format_func=lambda x: health_labels[x],
+    index=4  # default 4 (Very good)
+)
 
-trust_strangers = st.radio("Do you trust strangers?", [
-    (1, "Trust completely"), (2, "Trust somewhat"), (3, "Don't trust much"), (4, "Don't trust at all")
-], format_func=lambda x: x[1])[0]
+national_pride_options = [0.0, 0.33, 0.66, 1.0]
+national_pride_labels = {
+    0.0: "Not proud",
+    0.33: "Slightly proud",
+    0.66: "Proud",
+    1.0: "Very proud"
+}
 
-trust_other_religions = st.radio("Do you trust people of other religions?", [
-    (1, "Trust completely"), (2, "Trust somewhat"), (3, "Don't trust much"), (4, "Don't trust at all")
-], format_func=lambda x: x[1])[0]
+National_Pride_Rev = st.radio(
+    "How proud are you of your country?",
+    options=national_pride_options,
+    format_func=lambda x: national_pride_labels[x],
+    index=3  # default 1.0 (Very proud)
+)
 
-trust_other_nationalities = st.radio("Do you trust people from other countries?", [
-    (1, "Trust completely"), (2, "Trust somewhat"), (3, "Don't trust much"), (4, "Don't trust at all")
-], format_func=lambda x: x[1])[0]
+secure_in_neighborhood_options = [3, 2, 1, 4]
+secure_in_neighborhood_labels = {
+    1: "Not secure",
+    2: "Somewhat secure",
+    3: "Secure",
+    4: "Very secure"
+}
+
+Secure_in_Neighborhood = st.radio(
+    "Do you feel secure in your neighborhood?",
+    options=secure_in_neighborhood_options,
+    format_func=lambda x: secure_in_neighborhood_labels[x],
+    index=3  # default 4 (Very secure)
+)
+
+freedom_of_choice_recoded_options = [3, 4, 1, 2, 5]
+freedom_of_choice_recoded_labels = {
+    1: "Very restricted",
+    2: "Restricted",
+    3: "Neutral",
+    4: "Free",
+    5: "Completely free"
+}
+
+Freedom_of_Choice_Recoded = st.radio(
+    "Recoded: How free do you feel in your choices?",
+    options=freedom_of_choice_recoded_options,
+    format_func=lambda x: freedom_of_choice_recoded_labels[x],
+    index=4  # default 5 (Completely free)
+)
 
 # -------------------------------
-# 🏛️ INSTITUTIONS
+# 🏛️ GOVERNMENT & RESPONSIBILITY
 # -------------------------------
-st.header("🏛️ How Much Do You Trust These?")
+st.header("🌍 Beliefs, Trust & Responsibility")
 
-confidence_police = st.radio("Do you trust the police?", [
-    (1, "A lot"), (2, "Quite a lot"), (3, "Not much"), (4, "None at all")
-], format_func=lambda x: x[1])[0]
+Importance_of_God = st.radio(
+    "How important is God/religion to you?",
+    options=[1, 2, 3, 4, 5],
+    format_func=lambda x: {
+        1: "Not important",
+        2: "Slightly important",
+        3: "Moderately important",
+        4: "Important",
+        5: "Very important"
+    }[x],
+    index=2
+) * 2
 
-confidence_courts = st.radio("Do you trust the courts?", [
-    (1, "A lot"), (2, "Quite a lot"), (3, "Not much"), (4, "None at all")
-], format_func=lambda x: x[1])[0]
+Science_Makes_Life_Better = st.radio(
+    "Do you believe science makes life better?",
+    options=[1, 2, 3, 4, 5],
+    format_func=lambda x: {
+        1: "Strongly disagree",
+        2: "Disagree",
+        3: "Neutral",
+        4: "Agree",
+        5: "Strongly agree"
+    }[x],
+    index=2
+) * 2
 
-confidence_government = st.radio("Do you trust the government?", [
-    (1, "A lot"), (2, "Quite a lot"), (3, "Not much"), (4, "None at all")
-], format_func=lambda x: x[1])[0]
+Science_Benefits_World = st.radio(
+    "Do you believe science benefits the world?",
+    options=[1, 2, 3, 4, 5],
+    format_func=lambda x: {
+        1: "Strongly disagree",
+        2: "Disagree",
+        3: "Neutral",
+        4: "Agree",
+        5: "Strongly agree"
+    }[x],
+    index=2
+) * 2
+
+General_Trust = st.radio(
+    "How much do you trust people in general?",
+    options=[1, 2, 3, 4, 5],
+    format_func=lambda x: {
+        1: "Don't trust at all",
+        2: "Slightly trust",
+        3: "Somewhat trust",
+        4: "Mostly trust",
+        5: "Fully trust"
+    }[x],
+    index=2
+) * 2
+
+Govt_vs_Self_Responsibility = st.radio(
+    "Who is more responsible for your well-being?",
+    options=[1, 2, 3, 4, 5],
+    format_func=lambda x: {
+        1: "Entirely Government",
+        2: "Mostly Government",
+        3: "Both equally",
+        4: "Mostly Myself",
+        5: "Entirely Myself"
+    }[x],
+    index=2
+) * 2
+
+
 
 # -------------------------------
 # 📤 SUBMIT
 # -------------------------------
 if st.button("🍌 See My Life-O-Peel Score"):
     features = {
-        "happiness": happiness,
-        "self_rated_health": health,
-        "freedom_of_choice": freedom,
-        "financial_satisfaction": financial_satisfaction,
-        "went_without_food": went_without_food,
-        "went_without_medicine": went_without_medicine,
-        "went_without_cash": went_without_cash,
-        "went_without_shelter": went_without_shelter,
-        "unsafe_at_home": unsafe_at_home,
-        "living_standard_vs_parents": living_standard_vs_parents,
-        "importance_family": importance_family,
-        "importance_friends": importance_friends,
-        "importance_work": importance_work,
-        "importance_religion": importance_religion,
-        "importance_leisure_time": importance_leisure_time,
-        "teach_responsibility": teach_responsibility,
-        "teach_determination": teach_determination,
-        "teach_religion": teach_religion,
-        "goal_make_parents_proud": goal_make_parents_proud,
-        "duty_care_parents": duty_care_parents,
-        "work_as_duty": work_as_duty,
-        "general_trust": general_trust,
-        "trust_family": trust_family,
-        "trust_neighborhood": trust_neighborhood,
-        "trust_known_people": trust_known_people,
-        "trust_strangers": trust_strangers,
-        "trust_other_religions": trust_other_religions,
-        "trust_other_nationalities": trust_other_nationalities,
-        "confidence_police": confidence_police,
-        "confidence_courts": confidence_courts,
-        "confidence_government": confidence_government,
-
-        # Interaction features
-        "trust_x_money": trust_strangers * financial_satisfaction,
-        "health_x_food": health * went_without_food,
-        "safety": trust_family * trust_neighborhood * trust_strangers * general_trust,
-        "finance_x_choice": freedom * financial_satisfaction,
-
-        # Engineered features
-        "safety_score": (
-            confidence_police +
-            confidence_courts +
-            confidence_government +
-            (5 - unsafe_at_home)
-        ) / 4,
-
-        "hardship_score": (
-            went_without_food +
-            went_without_medicine +
-            went_without_cash +
-            went_without_shelter
-        ) / 4,
-
-        "family_value_score": (
-            importance_family +
-            goal_make_parents_proud +
-            duty_care_parents +
-            trust_family
-        ) / 4,
-
-        "religiosity_score": (
-            importance_religion +
-            teach_religion
-        ) / 2,
-
-        "social_trust_score": (
-            general_trust +
-            trust_strangers +
-            trust_known_people +
-            trust_neighborhood +
-            trust_other_religions +
-            trust_other_nationalities
-        ) / 6,
-
-        "satisfaction_factor_score": (
-            freedom +
-            health +
-            happiness +
-            financial_satisfaction
-        ) / 4,
-
-        "education_value_score": (
-            teach_determination +
-            teach_responsibility +
-            work_as_duty
-        ) / 3,
-
-        "personal_aspiration_score": (
-            importance_work +
-            importance_friends +
-            importance_leisure_time +
-            living_standard_vs_parents
-        ) / 4,
+        "Satisfaction_Financial_Binned": financial_satisfaction,  # from your finance radio input
+        "Freedom_of_Choice_Binned": freedom,                      # from your freedom radio input
+        "No_Cash_Income": No_Cash_Income,
+        "No_Food": No_Food,
+        "No_Medicine": No_Medicine,
+        "No_Shelter": No_Shelter,
+        "Unsafe_at_Home": Unsafe_at_Home,
+        "Income_Level_Grouped": Income_Level_Grouped,
+        "Happiness_Rev": Happiness_Rev,
+        "Health_Rev": Health_Rev,
+        "National_Pride_Rev": National_Pride_Rev,
+        "Secure_in_Neighborhood": Secure_in_Neighborhood,
+        "Freedom_of_Choice_Recoded": Freedom_of_Choice_Recoded,
+        "Govt_vs_Self_Responsibility": Govt_vs_Self_Responsibility,
+        "General_Trust": General_Trust,
+        "Importance_of_God": Importance_of_God,
+        "Science_Makes_Life_Better": Science_Makes_Life_Better,
+        "Science_Benefits_World": Science_Benefits_World,
     }
 
-    
+    input_df = pd.DataFrame([features])
 
-    # Create DataFrame and reorder columns to match model
-    df = pd.DataFrame([features])
-    df = df[model.feature_names_in_]
+    # If your model expects columns in a certain order, reorder explicitly:
+    input_df = input_df[model.feature_names_in_]
 
-    # Apply transformations if needed (e.g., log) — uncomment and adapt as needed
-    # df["financial_satisfaction"] = np.log1p(df["financial_satisfaction"])
+    prediction = model.predict(input_df)[0]
 
-    # Predict
-    prediction = model.predict(df)[0]
+    # ... (rest of your display code)
+   
 
     # Correct mapping based on your class labels (1 = low, 2 = medium, 3 = high)
-    if prediction == 3:
+    if prediction == 2:
         monkey_message = "🍌 *Ooo-oo-aa-aa!* You're doing amazing! Life’s good, you’re on top of the banana tree! 🍃"
         bg_color = "#DFFFD6"  # light green
         text_color = "#1B5E20"  # dark green
-    elif prediction == 1:
+    elif prediction == 0:
         monkey_message = "😟 *Oh no...* That’s a low score. Things aren’t going great right now. Time to take care of yourself and ask for help if you need it. 🍂"
         bg_color = "#FFD6D6"  # light red
         text_color = "#B71C1C"  # dark red
-    elif prediction == 2:
+    elif prediction == 1:
         monkey_message = "🤔 *Hmm...* You're somewhere in the middle. Not bad, but not great either. Let’s find ways to improve and swing higher! 🍌"
         bg_color = "#FFF9C4"  # light yellow
         text_color = "#F57F17"  # dark yellow/brown
+    else:
+    # Fallback (in case prediction is unexpected)
+        monkey_message = "🤷‍♂️ Hmm, something went unexpected. Let's try again!"
+        bg_color = "#E0E0E0"  # light gray
+        text_color = "#000000"  # black
 
     # Display result
     st.header("🎉 Monkey Peel-o Says:")
